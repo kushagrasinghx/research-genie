@@ -5,6 +5,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import {
   $getSelection,
   $isRangeSelection,
+  $setSelection,
   FORMAT_TEXT_COMMAND,
   UNDO_COMMAND,
   REDO_COMMAND,
@@ -126,11 +127,14 @@ export default function Toolbar() {
   const [showMarginDropdown, setShowMarginDropdown] = useState(false);
   const [showLinkPopover, setShowLinkPopover] = useState(false);
   const [linkInput, setLinkInput] = useState("");
+  const [linkError, setLinkError] = useState(false);
   const fontFamilyRef = useRef(null);
   const fontSizeRef = useRef(null);
   const pageSizeRef = useRef(null);
   const marginRef = useRef(null);
   const linkRef = useRef(null);
+  const linkInputRef = useRef(null);
+  const savedSelectionRef = useRef(null);
 
   const pageSizeKey = usePageStore((s) => s.pageSizeKey);
   const marginKey = usePageStore((s) => s.marginKey);
@@ -335,25 +339,68 @@ export default function Toolbar() {
     setShowFontSizeDropdown(false);
   };
 
+  const isValidUrl = (input) => {
+    if (!input || !input.trim()) return false;
+    const val = input.trim();
+    // If it already has a known protocol, validate directly
+    if (/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(val) || val.startsWith("mailto:") || val.startsWith("tel:")) {
+      try {
+        new URL(val);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+    // Otherwise try with https:// prefix — must look like a real hostname
+    try {
+      const u = new URL(`https://${val}`);
+      return u.hostname.includes(".");
+    } catch {
+      return false;
+    }
+  };
+
   const toggleLink = () => {
     if (showLinkPopover) {
       setShowLinkPopover(false);
       return;
     }
+    // Capture current Lexical selection before the popover input steals focus
+    editor.getEditorState().read(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        savedSelectionRef.current = selection.clone();
+      }
+    });
     closeAllDropdowns();
     setLinkInput(isLink ? linkUrl : "");
+    setLinkError(false);
     setShowLinkPopover(true);
   };
 
+  // Focus the input after the popover mounts (replaces autoFocus)
+  useEffect(() => {
+    if (showLinkPopover && linkInputRef.current) {
+      linkInputRef.current.focus();
+    }
+  }, [showLinkPopover]);
+
   const applyLink = () => {
     const url = linkInput.trim();
-    if (url) {
-      const finalUrl =
-        url.startsWith("http://") || url.startsWith("https://")
-          ? url
-          : `https://${url}`;
-      editor.dispatchCommand(TOGGLE_LINK_COMMAND, finalUrl);
+    if (!url) return;
+    if (!isValidUrl(url)) {
+      setLinkError(true);
+      return;
     }
+    const finalUrl =
+      /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(url) ? url : `https://${url}`;
+    // Restore the saved selection so TOGGLE_LINK_COMMAND operates on it
+    editor.update(() => {
+      if (savedSelectionRef.current) {
+        $setSelection(savedSelectionRef.current);
+      }
+    });
+    editor.dispatchCommand(TOGGLE_LINK_COMMAND, finalUrl);
     setShowLinkPopover(false);
   };
 
@@ -609,14 +656,26 @@ export default function Toolbar() {
                 </span>
               </div>
               <input
-                type="url"
+                ref={linkInputRef}
+                type="text"
                 value={linkInput}
-                onChange={(e) => setLinkInput(e.target.value)}
+                onChange={(e) => {
+                  setLinkInput(e.target.value);
+                  if (linkError) setLinkError(false);
+                }}
                 onKeyDown={handleLinkKeyDown}
                 placeholder="https://example.com"
-                autoFocus
-                className="w-full h-8 px-2.5 rounded-md border border-border bg-background text-xs text-foreground placeholder:text-muted-foreground/50 outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/40"
+                className={`w-full h-8 px-2.5 rounded-md border bg-background text-xs text-foreground placeholder:text-muted-foreground/50 outline-none focus:ring-1 transition-colors ${
+                  linkError
+                    ? "border-destructive focus:ring-destructive/40 focus:border-destructive"
+                    : "border-border focus:ring-primary/40 focus:border-primary/40"
+                }`}
               />
+              {linkError && (
+                <p className="mt-1.5 text-[10px] text-destructive">
+                  Please enter a valid URL (e.g. https://example.com or mailto:user@example.com)
+                </p>
+              )}
             </div>
             <div className="flex items-center gap-1.5 px-3 py-2 border-t border-border/50 bg-muted/30">
               {isLink && (

@@ -29,6 +29,9 @@ export default function Header() {
   const setViolations = useViolationsStore((state) => state.setViolations);
   const setViolationsLoading = useViolationsStore((state) => state.setLoading);
   const setViolationsError = useViolationsStore((state) => state.setError);
+  const setActiveRightTab = useViolationsStore(
+    (state) => state.setActiveRightTab,
+  );
 
   const [docTitle, setDocTitle] = useState("Untitled Document");
   const [editingTitle, setEditingTitle] = useState(false);
@@ -70,6 +73,7 @@ export default function Header() {
   const handleCheckIEEE = async () => {
     if (!documentText.trim()) return;
     setViolationsLoading(true);
+    setActiveRightTab("ieee");
     try {
       const data = await checkIEEE(documentText);
       setViolations(data.violations);

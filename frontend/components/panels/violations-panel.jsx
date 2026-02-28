@@ -43,7 +43,7 @@ const severityMeta = {
   },
 };
 
-export default function ViolationsPanel() {
+export default function ViolationsPanel({ compact = false }) {
   const violations = useViolationsStore((s) => s.violations);
   const isLoading = useViolationsStore((s) => s.isLoading);
   const error = useViolationsStore((s) => s.error);
@@ -79,34 +79,36 @@ export default function ViolationsPanel() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <FileCheck className="size-4 text-primary" />
-          <h2 className="text-sm font-medium text-foreground">
-            IEEE Compliance
-          </h2>
-        </div>
-        {totalCount > 0 && (
-          <div className="flex items-center gap-1.5">
-            {severityOrder.map((sev) => {
-              const count = (grouped[sev] || []).length;
-              if (count === 0) return null;
-              const meta = severityMeta[sev];
-              return (
-                <Badge
-                  key={sev}
-                  variant="outline"
-                  className={`text-[10px] h-4 font-normal ${meta.countBg}`}
-                >
-                  {count}{" "}
-                  {count === 1 ? sev : sev === "info" ? "info" : sev + "s"}
-                </Badge>
-              );
-            })}
+      {/* Header — hidden when rendered inside a tabbed container */}
+      {!compact && (
+        <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FileCheck className="size-4 text-primary" />
+            <h2 className="text-sm font-medium text-foreground">
+              IEEE Compliance
+            </h2>
           </div>
-        )}
-      </div>
+          {totalCount > 0 && (
+            <div className="flex items-center gap-1.5">
+              {severityOrder.map((sev) => {
+                const count = (grouped[sev] || []).length;
+                if (count === 0) return null;
+                const meta = severityMeta[sev];
+                return (
+                  <Badge
+                    key={sev}
+                    variant="outline"
+                    className={`text-[10px] h-4 font-normal ${meta.countBg}`}
+                  >
+                    {count}{" "}
+                    {count === 1 ? sev : sev === "info" ? "info" : sev + "s"}
+                  </Badge>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Scrollable violations list */}
       <div className="flex-1 min-h-0 overflow-y-auto flex flex-col">
