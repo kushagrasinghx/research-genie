@@ -9,10 +9,12 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 
-import { OnChangePlugin, EditorRefPlugin } from "./editor-plugins";
+import { OnChangePlugin, EditorRefPlugin, ClickableLinkPlugin } from "./editor-plugins";
 
+// Accepts any protocol-prefixed URL (https, http, ftp, mailto, tel, …)
+// or a bare hostname that contains at least one dot.
 const URL_REGEX =
-  /^(https?:\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/;
+  /^([a-zA-Z][a-zA-Z\d+\-.]*:[\S]+)|([\w-]+(\.[\w-]+)+([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)$/;
 
 export default function ResearchEditor() {
   return (
@@ -35,6 +37,7 @@ export default function ResearchEditor() {
       <TabIndentationPlugin />
       <OnChangePlugin />
       <EditorRefPlugin />
+      <ClickableLinkPlugin />
     </div>
   );
 }

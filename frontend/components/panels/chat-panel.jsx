@@ -2,13 +2,14 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Bot, Sparkles, Send, Loader2, Trash2, AlertTriangle } from "lucide-react";
+import { Bot, Sparkles, Loader2, Trash2, AlertTriangle } from "lucide-react";
 import useChatStore from "@/store/use-chat-store";
 import useEditorStore from "@/store/use-editor-store";
 import { streamChat } from "@/lib/api";
 import ChatMessage from "@/components/chat-message";
+import { Kbd } from "@/components/ui/kbd";
 
-export default function ChatPanel() {
+export default function ChatPanel({ compact = false }) {
   const messages = useChatStore((s) => s.messages);
   const isStreaming = useChatStore((s) => s.isStreaming);
   const error = useChatStore((s) => s.error);
@@ -80,26 +81,28 @@ export default function ChatPanel() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Bot className="size-4 text-primary" />
-          <h2 className="text-sm font-medium text-foreground">
-            AI Assistant
-          </h2>
+      {/* Header — hidden when rendered inside a tabbed container */}
+      {!compact && (
+        <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Bot className="size-4 text-primary" />
+            <h2 className="text-sm font-medium text-foreground">
+              AI Assistant
+            </h2>
+          </div>
+          {messages.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearChat}
+              title="Clear chat"
+              className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+            >
+              <Trash2 className="size-3" />
+            </Button>
+          )}
         </div>
-        {messages.length > 0 && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearChat}
-            title="Clear chat"
-            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-          >
-            <Trash2 className="size-3" />
-          </Button>
-        )}
-      </div>
+      )}
 
       {/* Messages area */}
       <div
@@ -107,23 +110,23 @@ export default function ChatPanel() {
         className="flex-1 min-h-0 overflow-y-auto flex flex-col"
       >
         {messages.length === 0 && !error && (
-          <div className="flex-1 flex flex-col items-center justify-center px-4 text-center">
-            <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
-              <Sparkles className="size-5 text-primary/50" />
+          <div className="flex-1 flex flex-col items-center justify-center px-5 py-6 text-center">
+            <div className="size-11 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent flex items-center justify-center mb-4 ring-1 ring-primary/10">
+              <Sparkles className="size-5 text-primary" />
             </div>
-            <p className="text-xs font-medium text-foreground mb-1">
-              AI Research Assistant
+            <p className="text-sm font-semibold text-foreground mb-1.5">
+              How can I help?
             </p>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Ask me anything about your document. I can help with IEEE
-              compliance, writing improvements, structure, and more.
+            <p className="text-[11px] text-muted-foreground leading-relaxed mb-4">
+              Ask me about your document — IEEE compliance, writing style,
+              structure, citations, and more.
             </p>
-            <div className="flex flex-wrap justify-center gap-1.5 mt-3">
+            <div className="flex flex-wrap justify-center gap-1.5">
               {[
                 "Check my abstract",
                 "Summarize document",
                 "Improve clarity",
-                "Fix grammar issues",
+                "Fix grammar",
               ].map((prompt) => (
                 <button
                   key={prompt}
@@ -141,7 +144,7 @@ export default function ChatPanel() {
         )}
 
         {(messages.length > 0 || error) && (
-          <div className="p-3 space-y-3">
+          <div className="p-3 space-y-4">
             {messages.map((msg, i) => (
               <ChatMessage
                 key={msg.id}
@@ -155,9 +158,9 @@ export default function ChatPanel() {
             ))}
 
             {error && (
-              <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 dark:bg-red-500/5 border border-red-500/20 dark:border-red-500/10">
-                <AlertTriangle className="size-4 text-red-600 dark:text-red-400 mt-0.5 shrink-0" />
-                <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
+              <div className="flex items-start gap-2 p-3 rounded-xl bg-destructive/5 border border-destructive/15">
+                <AlertTriangle className="size-3.5 text-destructive mt-0.5 shrink-0" />
+                <p className="text-xs text-destructive">{error}</p>
               </div>
             )}
           </div>
@@ -165,8 +168,14 @@ export default function ChatPanel() {
       </div>
 
       {/* Input area */}
-      <div className="p-3 border-t border-border">
-        <div className="flex items-end gap-2">
+      <div className="p-3 pt-2 border-t border-border/50 shrink-0">
+        <div
+          className={`rounded-xl border bg-background transition-all ${
+            isStreaming
+              ? "border-border opacity-80"
+              : "border-border focus-within:border-primary/40 focus-within:ring-2 focus-within:ring-primary/10"
+          }`}
+        >
           <textarea
             ref={inputRef}
             value={input}
@@ -176,21 +185,29 @@ export default function ChatPanel() {
             placeholder="Ask about your document..."
             rows={1}
             disabled={isStreaming}
-            className="flex-1 resize-none rounded-lg border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/50 disabled:opacity-50 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-            style={{ minHeight: 36, maxHeight: 120 }}
+            className="w-full resize-none bg-transparent px-3 pt-2.5 pb-1 text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none disabled:cursor-not-allowed [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            style={{ minHeight: 38, maxHeight: 120 }}
           />
-          <button
-            onClick={handleSend}
-            disabled={!input.trim() || isStreaming}
-            className="shrink-0 p-2 text-muted-foreground hover:text-primary disabled:opacity-30 disabled:pointer-events-none transition-colors"
-          >
-            {isStreaming ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              <Send className="size-4" />
-            )}
-          </button>
+          <div className="flex items-center justify-end px-2.5 pb-2">
+            <button
+              onClick={handleSend}
+              disabled={!input.trim() || isStreaming}
+              className="flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:pointer-events-none transition-colors"
+            >
+              {isStreaming ? (
+                <Loader2 className="size-3 animate-spin" />
+              ) : (
+                <>
+                  <Kbd>↵ Enter</Kbd>
+                  <span>Send</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
+        <p className="text-[10px] text-muted-foreground/50 text-center mt-1.5 leading-tight">
+          AI Assistant in this editor can make mistakes.
+        </p>
       </div>
     </div>
   );
