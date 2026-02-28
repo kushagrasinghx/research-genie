@@ -1,0 +1,79 @@
+{
+  "required_sections": [
+    {
+      "name": "Abstract",
+      "order": 1,
+      "aliases": ["abstract"],
+      "numbered": false
+    },
+    {
+      "name": "Introduction",
+      "order": 2,
+      "aliases": ["introduction"],
+      "numbered": true
+    },
+    {
+      "name": "Related Work",
+      "order": 3,
+      "aliases": ["related work", "literature review", "background", "prior work", "state of the art"],
+      "numbered": true
+    },
+    {
+      "name": "Methodology",
+      "order": 4,
+      "aliases": ["methodology", "methods", "proposed method", "proposed approach", "materials and methods", "system model", "framework"],
+      "numbered": true
+    },
+    {
+      "name": "Results and Discussion",
+      "order": 5,
+      "aliases": ["results and discussion", "results", "experimental results", "evaluation", "experiments", "discussion"],
+      "numbered": true
+    },
+    {
+      "name": "Conclusion",
+      "order": 6,
+      "aliases": ["conclusion", "conclusions", "concluding remarks", "summary"],
+      "numbered": true
+    },
+    {
+      "name": "References",
+      "order": 7,
+      "aliases": ["references", "bibliography"],
+      "numbered": false
+    }
+  ],
+  "abstract_rules": {
+    "min_words": 150,
+    "max_words": 250
+  },
+  "citation_patterns": [
+    {
+      "name": "ieee_numeric",
+      "pattern": "\\[\\d+\\]",
+      "description": "IEEE numeric citation [1]"
+    },
+    {
+      "name": "ieee_multi",
+      "pattern": "\\[\\d+(?:,\\s*\\d+)*\\]",
+      "description": "IEEE multi-citation [1, 2, 3]"
+    },
+    {
+      "name": "ieee_range",
+      "pattern": "\\[\\d+\\]-\\[\\d+\\]",
+      "description": "IEEE range citation [1]-[3]"
+    }
+  ],
+  "invalid_citation_patterns": [
+    {
+      "name": "apa_author_year",
+      "pattern": "\\([A-Z][a-z]+(?:\\s(?:&|and)\\s[A-Z][a-z]+)*,\\s*\\d{4}\\)",
+      "description": "APA style (Author, Year)"
+    },
+    {
+      "name": "mla_author_page",
+      "pattern": "\\([A-Z][a-z]+\\s+\\d+\\)",
+      "description": "MLA style (Author Page)"
+    }
+  ]
+}
