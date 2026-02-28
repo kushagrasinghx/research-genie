@@ -1,0 +1,218 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+/* Light mode — clean zinc gray with blue primary */
+:root {
+  --radius: 0.625rem;
+  --background: oklch(0.965 0 0);
+  --foreground: oklch(0.145 0.005 285);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0.005 285);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0.005 285);
+  --primary: oklch(0.45 0.18 260);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.94 0.002 285);
+  --secondary-foreground: oklch(0.2 0.005 285);
+  --muted: oklch(0.94 0.002 285);
+  --muted-foreground: oklch(0.52 0.005 285);
+  --accent: oklch(0.94 0.002 285);
+  --accent-foreground: oklch(0.2 0.005 285);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.88 0.002 285);
+  --input: oklch(0.88 0.002 285);
+  --ring: oklch(0.45 0.18 260);
+  --chart-1: oklch(0.55 0.2 260);
+  --chart-2: oklch(0.6 0.15 200);
+  --chart-3: oklch(0.45 0.1 230);
+  --chart-4: oklch(0.7 0.15 280);
+  --chart-5: oklch(0.65 0.12 220);
+  --sidebar: oklch(0.96 0.002 285);
+  --sidebar-foreground: oklch(0.145 0.005 285);
+  --sidebar-primary: oklch(0.45 0.18 260);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.92 0.002 285);
+  --sidebar-accent-foreground: oklch(0.2 0.005 285);
+  --sidebar-border: oklch(0.88 0.002 285);
+  --sidebar-ring: oklch(0.45 0.18 260);
+}
+
+/* Dark mode — neutral zinc dark with blue primary */
+.dark {
+  --background: oklch(0.14 0.005 285);
+  --foreground: oklch(0.925 0.002 285);
+  --card: oklch(0.18 0.005 285);
+  --card-foreground: oklch(0.925 0.002 285);
+  --popover: oklch(0.2 0.005 285);
+  --popover-foreground: oklch(0.925 0.002 285);
+  --primary: oklch(0.6 0.18 260);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.23 0.005 285);
+  --secondary-foreground: oklch(0.925 0.002 285);
+  --muted: oklch(0.23 0.005 285);
+  --muted-foreground: oklch(0.62 0.005 285);
+  --accent: oklch(0.26 0.005 285);
+  --accent-foreground: oklch(0.925 0.002 285);
+  --destructive: oklch(0.65 0.2 25);
+  --border: oklch(0.3 0.005 285);
+  --input: oklch(0.26 0.005 285);
+  --ring: oklch(0.6 0.18 260);
+  --chart-1: oklch(0.6 0.22 260);
+  --chart-2: oklch(0.65 0.15 200);
+  --chart-3: oklch(0.55 0.12 230);
+  --chart-4: oklch(0.6 0.2 280);
+  --chart-5: oklch(0.58 0.18 220);
+  --sidebar: oklch(0.16 0.005 285);
+  --sidebar-foreground: oklch(0.925 0.002 285);
+  --sidebar-primary: oklch(0.6 0.18 260);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.23 0.005 285);
+  --sidebar-accent-foreground: oklch(0.925 0.002 285);
+  --sidebar-border: oklch(0.3 0.005 285);
+  --sidebar-ring: oklch(0.6 0.18 260);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Subtle transparent scrollbars */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(128, 128, 128, 0.25) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.2);
+    border-radius: 3px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: rgba(128, 128, 128, 0.35);
+  }
+}
+
+/* Page-break spacers: injected by EditorCanvas to push block elements
+   to the next page's content zone.  Scoped to #editor-content so the
+   rule does NOT apply to cloned DOM used by the PDF exporter. */
+#editor-content [data-page-break]::before {
+  content: "";
+  display: block;
+  height: var(--page-break-height, 0px);
+}
+
+/* Print / PDF export styles */
+@media print {
+  .print-hide {
+    display: none !important;
+  }
+
+  .print-main {
+    display: block !important;
+  }
+
+  body {
+    background: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #editor-scroll-area {
+    overflow: visible !important;
+    padding: 0 !important;
+    height: auto !important;
+  }
+
+  #editor-content {
+    padding: 0 !important;
+    min-height: auto !important;
+    position: static !important;
+    z-index: auto !important;
+    width: 100% !important;
+  }
+
+  /* Strip page-break spacers when printing */
+  #editor-content [data-page-break]::before {
+    display: none !important;
+  }
+
+  /* Remove visual page decorations */
+  .page-card-bg {
+    display: none !important;
+  }
+
+  * {
+    box-shadow: none !important;
+  }
+
+  /* Ensure links print with proper color */
+  a {
+    color: #1a0dab !important;
+    text-decoration: underline !important;
+  }
+
+  /* Prevent orphans/widows */
+  p, h1, h2, h3, li, blockquote {
+    orphans: 3;
+    widows: 3;
+  }
+
+  h1, h2, h3 {
+    break-after: avoid;
+  }
+}
