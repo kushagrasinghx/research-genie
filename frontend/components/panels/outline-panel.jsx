@@ -22,6 +22,21 @@ const TAG_STYLES = {
     text: "text-[11px] text-muted-foreground",
     dot: "size-1 rounded-sm bg-muted-foreground/30 shrink-0",
   },
+  h4: {
+    indent: "pl-11",
+    text: "text-[11px] text-muted-foreground/80",
+    dot: "size-1 rounded-sm bg-muted-foreground/20 shrink-0",
+  },
+  h5: {
+    indent: "pl-14",
+    text: "text-[10px] text-muted-foreground/70",
+    dot: "size-[3px] rounded-sm bg-muted-foreground/15 shrink-0",
+  },
+  h6: {
+    indent: "pl-[68px]",
+    text: "text-[10px] text-muted-foreground/50",
+    dot: "size-[3px] rounded-sm bg-muted-foreground/10 shrink-0",
+  },
 };
 
 export default function OutlinePanel() {
