@@ -6,6 +6,7 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { LinkNode } from "@lexical/link";
 import { CodeNode } from "@lexical/code";
+import { ImageNode } from "@/components/editor/image-node";
 import { Minus, Plus } from "lucide-react";
 
 import editorTheme from "@/components/editor/editor-theme";
@@ -19,7 +20,7 @@ const EDITOR_CONFIG = {
   namespace: "ResearchEditor",
   theme: editorTheme,
   onError: (error) => console.error("Lexical error:", error),
-  nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode, CodeNode],
+  nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode, CodeNode, ImageNode],
 };
 
 const ZOOM_LEVELS = [50, 75, 90, 100, 110, 125, 150, 175, 200];

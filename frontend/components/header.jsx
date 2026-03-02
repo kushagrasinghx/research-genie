@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { UNDO_COMMAND, REDO_COMMAND } from "lexical";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
@@ -11,16 +13,18 @@ import {
   Loader2,
   Download,
   FileDown,
+  Undo2,
+  Redo2,
 } from "lucide-react";
 import ThemeToggle from "@/components/theme-toggle";
 import Toolbar from "@/components/editor/toolbar";
-import AddSection from "@/components/add-section";
 import useEditorStore from "@/store/use-editor-store";
 import useViolationsStore from "@/store/use-violations-store";
 import usePageStore from "@/store/use-page-store";
 import { checkIEEE } from "@/lib/api";
 
 export default function Header() {
+  const [editor] = useLexicalComposerContext();
   const documentText = useEditorStore((state) => state.documentText);
   const saveStatus = useEditorStore((state) => state.saveStatus);
   const saveSnapshot = useEditorStore((state) => state.saveSnapshot);
@@ -251,6 +255,27 @@ export default function Header() {
           <h1 className="text-sm font-semibold text-foreground">
             ResearchGenie
           </h1>
+
+          {/* Undo / Redo */}
+          <div className="flex items-center gap-0.5">
+          <button
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
+            title="Undo (Ctrl+Z)"
+            className="inline-flex items-center justify-center h-6 w-6 rounded-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+          >
+            <Undo2 className="size-3.5" />
+          </button>
+          <button
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
+            title="Redo (Ctrl+Y)"
+            className="inline-flex items-center justify-center h-6 w-6 rounded-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+          >
+            <Redo2 className="size-3.5" />
+          </button>
+          </div>
+
           <Separator orientation="vertical" className="h-4" />
           {editingTitle ? (
             <input
@@ -325,18 +350,13 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Ribbon bar — AddSection + formatting toolbar + action buttons */}
-      <div className="flex items-center gap-0.5 px-3 py-1.5 border-t border-border/50 bg-muted/30 dark:bg-card/50 flex-wrap">
-        {/* Add Section dropdown */}
-        <AddSection />
+      {/* Ribbon bar — formatting toolbar + action buttons */}
+      <div className="flex items-start gap-2 px-3 py-1.5 border-t border-border/50 bg-muted/30 dark:bg-card/50">
+        {/* Formatting toolbar (tabbed) */}
+        <div className="flex-1 min-w-0"><Toolbar /></div>
 
-        <Separator orientation="vertical" className="mx-1.5 h-5" />
-
-        {/* Formatting toolbar (inline) */}
-        <Toolbar />
-
-        {/* Push action buttons to the right */}
-        <div className="ml-auto flex items-center gap-1">
+        {/* Action buttons */}
+        <div className="flex items-center gap-1 shrink-0 pt-1">
           <Button
             variant="ghost"
             size="sm"

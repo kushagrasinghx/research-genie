@@ -4,6 +4,9 @@ const editorTheme = {
     h1: "text-[26px] font-bold mb-4 mt-6 text-foreground leading-tight",
     h2: "text-[21px] font-semibold mb-3 mt-5 text-foreground leading-snug",
     h3: "text-[17px] font-semibold mb-2 mt-4 text-foreground leading-snug",
+    h4: "text-[15px] font-semibold mb-2 mt-3 text-foreground",
+    h5: "text-[13px] font-semibold mb-1.5 mt-2.5 text-foreground",
+    h6: "text-[12px] font-semibold mb-1 mt-2 text-muted-foreground",
   },
   text: {
     bold: "font-bold",
@@ -30,6 +33,7 @@ const editorTheme = {
   },
   link: "text-primary underline underline-offset-2 cursor-pointer hover:text-primary/80",
   code: "bg-muted rounded-lg p-4 font-mono text-[13px] block mb-3 overflow-x-auto",
+  image: "editor-image",
 };
 
 export default editorTheme;

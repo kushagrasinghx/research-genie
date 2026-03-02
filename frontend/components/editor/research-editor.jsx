@@ -10,6 +10,7 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 
 import { OnChangePlugin, EditorRefPlugin, ClickableLinkPlugin } from "./editor-plugins";
+import { ImagePlugin } from "./image-plugin";
 
 // Accepts any protocol-prefixed URL (https, http, ftp, mailto, tel, …)
 // or a bare hostname that contains at least one dot.
@@ -38,6 +39,7 @@ export default function ResearchEditor() {
       <OnChangePlugin />
       <EditorRefPlugin />
       <ClickableLinkPlugin />
+      <ImagePlugin />
     </div>
   );
 }

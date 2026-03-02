@@ -147,6 +147,19 @@
   }
 }
 
+/* Editor image styles */
+.editor-image-wrapper {
+  display: inline-block;
+}
+
+.editor-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+  margin: 4px 0;
+}
+
 /* Page-break spacers: injected by EditorCanvas to push block elements
    to the next page's content zone.  Scoped to #editor-content so the
    rule does NOT apply to cloned DOM used by the PDF exporter. */
