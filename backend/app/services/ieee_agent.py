@@ -243,8 +243,13 @@ class IEEEComplianceAgent:
     def _check_citations(self, document: str) -> list[dict]:
         violations = []
 
+        valid_patterns = [re.compile(v["pattern"]) for v in self.rules["citation_patterns"]]
+
+        def _is_valid_ieee_citation(token: str) -> bool:
+            return any(p.fullmatch(token) for p in valid_patterns)
+
         for invalid in self.rules["invalid_citation_patterns"]:
-            pattern = re.compile(invalid["pattern"])
+            pattern = re.compile(invalid["pattern"], re.IGNORECASE)
             for match in pattern.finditer(document):
                 line_num = document[: match.start()].count("\n") + 1
                 violations.append(
