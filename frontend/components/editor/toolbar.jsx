@@ -475,7 +475,7 @@ export default function Toolbar() {
   return (
     <div className="flex flex-col w-full">
       {/* ── Tab strip ── */}
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-5">
         {TABS.map((tab) => (
           <button
             key={tab}
