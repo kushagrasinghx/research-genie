@@ -5,7 +5,7 @@ from pathlib import Path
 
 class Settings(BaseSettings):
     gemini_api_key: str = ""
-    gemini_model: str = "gemini-2.0-flash"
+    gemini_model: str = "gemini-2.5-flash"
     cors_origins: list[str] = ["http://localhost:3000"]
     rules_path: str = str(
         Path(__file__).resolve().parent.parent.parent / "rules" / "ieee_rules.json"
