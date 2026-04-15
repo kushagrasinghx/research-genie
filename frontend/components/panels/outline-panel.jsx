@@ -80,7 +80,7 @@ export default function OutlinePanel() {
         <List className="size-3.5 text-muted-foreground shrink-0" />
         <h2 className="text-xs font-medium text-foreground">Outline</h2>
         {headings.length > 0 && (
-          <span className="ml-auto text-[10px] text-muted-foreground">
+          <span className="ml-auto text-xs text-muted-foreground">
             {headings.length} heading{headings.length !== 1 ? "s" : ""}
           </span>
         )}

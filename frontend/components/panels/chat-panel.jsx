@@ -2,12 +2,74 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Bot, Sparkles, Loader2, Trash2, AlertTriangle } from "lucide-react";
+import { Bot, Sparkles, Loader2, Trash2, AlertTriangle, WifiOff, ServerCrash, Clock } from "lucide-react";
 import useChatStore from "@/store/use-chat-store";
 import useEditorStore from "@/store/use-editor-store";
 import { streamChat } from "@/lib/api";
 import ChatMessage from "@/components/chat-message";
 import { Kbd } from "@/components/ui/kbd";
+
+/** Parse the raw error string and return { code, title, message } */
+function parseError(raw) {
+  // Extract numeric HTTP/API code
+  const codeMatch = raw.match(/['"]?code['"]?\s*[=:]\s*(\d+)/);
+  const code = codeMatch ? parseInt(codeMatch[1], 10) : null;
+
+  // Extract human-readable message field
+  const msgMatch = raw.match(/['"]message['"]\s*:\s*['"]([^'"]+)['"]/);
+  const detail = msgMatch ? msgMatch[1] : null;
+
+  // Extract status string
+  const statusMatch = raw.match(/['"]status['"]\s*:\s*['"]([^'"]+)['"]/);
+  const status = statusMatch ? statusMatch[1] : null;
+
+  if (code === 503 || status === "UNAVAILABLE") {
+    return {
+      icon: Clock,
+      title: "Model Temporarily Unavailable",
+      message: detail ?? "The AI model is experiencing high demand. Please try again in a moment.",
+    };
+  }
+  if (code === 429) {
+    return {
+      icon: Clock,
+      title: "Rate Limit Reached",
+      message: detail ?? "Too many requests. Please wait a moment before trying again.",
+    };
+  }
+  if (code === 500 || code === 502 || code === 504) {
+    return {
+      icon: ServerCrash,
+      title: "Server Error",
+      message: detail ?? "Something went wrong on the server. Please try again.",
+    };
+  }
+  if (raw.toLowerCase().includes("network") || raw.toLowerCase().includes("fetch")) {
+    return {
+      icon: WifiOff,
+      title: "Connection Error",
+      message: "Could not reach the server. Check your connection and try again.",
+    };
+  }
+  return {
+    icon: AlertTriangle,
+    title: "Something went wrong",
+    message: detail ?? raw,
+  };
+}
+
+function ChatError({ raw }) {
+  const { icon: Icon, title, message } = parseError(raw);
+  return (
+    <div className="rounded-xl border border-destructive/20 bg-destructive/5 overflow-hidden">
+      <div className="flex items-center gap-2 px-3 py-2 border-b border-destructive/10">
+        <Icon className="size-3.5 text-destructive shrink-0" />
+        <span className="text-xs font-medium text-destructive">{title}</span>
+      </div>
+      <p className="text-xs text-destructive/80 px-3 py-2 leading-relaxed">{message}</p>
+    </div>
+  );
+}
 
 export default function ChatPanel({ compact = false }) {
   const messages = useChatStore((s) => s.messages);
@@ -157,12 +219,7 @@ export default function ChatPanel({ compact = false }) {
               />
             ))}
 
-            {error && (
-              <div className="flex items-start gap-2 p-3 rounded-xl bg-destructive/5 border border-destructive/15">
-                <AlertTriangle className="size-3.5 text-destructive mt-0.5 shrink-0" />
-                <p className="text-xs text-destructive">{error}</p>
-              </div>
-            )}
+            {error && <ChatError raw={error} />}
           </div>
         )}
       </div>
